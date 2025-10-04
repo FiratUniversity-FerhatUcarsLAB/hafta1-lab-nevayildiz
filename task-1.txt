@@ -1,4 +1,45 @@
-Öğrenci No:
-AD-SOYAD:
-
+Öğrenci No: 250541034
+AD-SOYAD: Neva Yıldız
+Görev Adı: Optimum bütçeli market alışverişi algoritması
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+ALGORITMA: OptimumMarketAlisverisi
+
+1. GİRİŞ:
+   - bütçe ← kullanıcıdan alınan toplam bütçe
+   - ürünListesi ← [
+       her ürün için: {
+           isim, fiyat, öncelik (1: yüksek, 2: orta, 3: düşük), kalite (opsiyonel)
+       }
+     ]
+
+2. BAŞLA
+
+3. ürünListesi üzerinde her ürün için:
+     ürün.faydaSkoru ← öncelik / fiyat
+     (Not: Kaliteyi de hesaba katmak istersen:
+      ürün.faydaSkoru ← (öncelik * kalite) / fiyat)
+
+4. ürünListesi ← faydaSkoru’na göre azalan sırayla sırala
+
+5. alınanÜrünler ← boş liste
+6. toplamHarcanan ← 0
+
+7. DÖNGÜ: ürünListesi’ndeki her ürün için TEKRARLA
+   a. EĞER ürün.fiyat ≤ (bütçe - toplamHarcanan) İSE
+        i. alınanÜrünler listesine ürünü ekle
+       ii. toplamHarcanan ← toplamHarcanan + ürün.fiyat
+   b. DEĞİLSE
+        i. EĞER ürün.öncelik = 1 (yüksek öncelikli) VE bütçe - toplamHarcanan ≥ ürün.fiyat * 0.9 İSE
+             (Not: %10 daha pahalı bile olsa alınabilir kabul ediliyorsa)
+             - alınanÜrünler listesine ürünü ekle
+             - toplamHarcanan ← toplamHarcanan + ürün.fiyat
+        ii. AKSİ TAKDİRDE ürünü atla
+   SON
+
+8. ÇIKIŞ:
+   - yazdır("Alınan Ürünler:")
+   - her ürün ∈ alınanÜrünler → yazdır(ürün.isim)
+   - yazdır("Toplam Harcanan: ", toplamHarcanan)
+   - yazdır("Kalan Bütçe: ", bütçe - toplamHarcanan)
+
+9. BİTİR
