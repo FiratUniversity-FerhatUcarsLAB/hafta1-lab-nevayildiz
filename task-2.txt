@@ -1,4 +1,76 @@
-Öğrenci No:
-AD-SOYAD:
-
+Öğrenci No: 250541034
+AD-SOYAD: Neva YILDIZ
+Görev Adı: Monopoly'de en iyi hamle seçimi
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+ALGORITMA: MonopolyEnIyiHamleSecimi
+
+1. GİRİŞ:
+    - oyuncuPozisyon ← oyuncunun bulunduğu kare
+    - oyuncuPara ← eldeki nakit para
+    - oyuncuMülkleri ← sahip olunan mülk listesi
+    - oyuncuEvDurumu ← her mülk için ev sayısı
+    - mülkListesi ← tüm oyun tahtası
+    - rakipler ← diğer oyuncular ve konumları
+    - kartlar ← kasa ve şans kartları
+
+2. BAŞLA
+
+3. EĞER oyuncuPozisyon bir mülk ise:
+    a. EĞER mülk sahibi YOKSA:
+        i. EĞER oyuncuPara ≥ mülk.fiyat İSE:
+            - EĞER mülk'ün renk grubundaki diğer mülklerden bir veya daha fazlası oyuncuda VARSA:
+                → satın alma puanı += 2
+            - EĞER mülk yüksek kira getirili ise:
+                → satın alma puanı += 2
+            - EĞER mülk konumu yoğun uğranan bölgedeyse:
+                → satın alma puanı += 1
+            - EĞER oyuncuPara - mülk.fiyat ≥ güvenli nakit seviyesi (örnek: 200$) İSE:
+                → satın alma puanı += 1
+            - EĞER satın alma puanı ≥ 4 İSE:
+                → satın al
+            - DEĞİLSE:
+                → satın alma
+        ii. DEĞİLSE:
+            → satın alma
+    b. EĞER mülk sahibi başka bir oyuncu İSE:
+        - kira öde
+        - EĞER oyuncuPara < kira:
+            → ipotek seçeneği değerlendir
+            → iflas kontrolü
+    c. EĞER mülk oyuncuya aitse:
+        - EĞER ev sayısı < 4 VE oyuncuPara ≥ evFiyat:
+            → Yükseltme yap (ev al)
+            → EĞER tüm renk grubu oyuncuda ise:
+                → Otel yapmayı değerlendir
+
+4. EĞER oyuncuPozisyon bir kart (şans/kasa) ise:
+    - Kartı çek
+    - Kartın etkisine göre hamle yapılır (koşullu karar)
+
+5. OYUNCU PARA DURUMU DEĞERLENDİR
+    - EĞER oyuncuPara < 100:
+        → Risk moduna geç (mülk alma durdur)
+        → Gerekirse ipotek yap
+
+6. YATIRIM KARARI (tur sonunda)
+    - Tüm renk gruplarını gez:
+        - EĞER tüm mülkleri oyuncuda ise:
+            - EĞER oyuncuPara ≥ ev fiyat:
+                → Ev al
+            - EĞER oyuncuPara çok fazlaysa:
+                → Otel değerlendir
+            - Amaç: En çok kira getiren mülklere öncelik ver
+
+7. STRATEJİK DEĞERLENDİRME
+    - Rakiplerin sık düştüğü hatlar (örneğin: turuncu, kırmızı) üzerinde mülk varsa:
+        → Öncelikli olarak ev yatırımı yapılır
+    - Demiryolları ve kamu hizmetleri:
+        → EĞER 2 veya daha fazlası oyuncuda ise:
+            → Tutmaya devam et
+        → DEĞİLSE:
+            → Satış veya ipotek değerlendir
+
+8. KARAR ÇIKTI:
+    - "Satın al", "Alma", "Ev al", "İpotek yap", "Otel al", "Pas geç" gibi sonuçlardan biri döndürülür
+
+9. BİTİR
