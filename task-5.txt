@@ -1,4 +1,116 @@
-Öğrenci No:
-AD-SOYAD:
-
+Öğrenci No: 250541034
+AD-SOYAD: Neva Yıldız
+Görev Adı: Bugün ne yiyeceğim
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+FONKSIYON YemekKararVer()
+    
+    // *** Girdi Verilerini Toplama ***
+    
+    // Kullanıcının tercihleri, alerjileri ve mevcut durumu
+    Kisitlamalar = KULLANICIDAN_AL("Alerjiler, diyet kısıtlamaları (Vegan/Vejetaryen/Glutensiz, vb.)")
+    MalzemeEnvanteri = KULLANICIDAN_AL("Evdeki mevcut malzemelerin listesi")
+    Bütçe = KULLANICIDAN_AL("Yemek için maksimum bütçe (0 = Evde Pişir)")
+    Zaman = KULLANICIDAN_AL("Yemek hazırlığı için maksimum süre (Dakika)")
+    RuhHali = KULLANICIDAN_AL("Canınız ne çekiyor? (Hafif, Ağır, Baharatlı, Tatlı, vb.)")
+    
+    YemekListesi = VERİTABANINDAN_AL("Tüm potansiyel yemek tarifleri/restoranlar listesi")
+    AdayYemekler = YemekListesi // Başlangıçta tüm yemekler adaydır
+
+    // *** Koşul: Öncelikli Filtreleme (Bütçe) ***
+    
+    EĞER Bütçe EŞİT 0 İSE
+        EKRANA_YAZDIR("Bütçe 0. Sadece evde pişirilebilecek yemekler aranıyor.")
+        
+        // Evde Pişirme Koşulu: Sadece tarifleri filtrele
+        AdayYemekler = AdayYemekler'den SADECE "Tarif" TÜRÜNDE Olanlar
+        
+    DEĞİLSE (Bütçe BÜYÜK 0 İSE)
+        EKRANA_YAZDIR("Maksimum bütçe: " + Bütçe + ". Restoran ve tarifler aranıyor.")
+        
+        // Dışarıdan Yemek Koşulu: Bütçeye uymayan restoranları çıkar
+        AdayYemekler = AdayYemekler'den FİYATI Bütçe'den KÜÇÜK Olanları TUT
+    SON
+    
+    // Aday listesinin boş olma ihtimaline karşı kontrol
+    EĞER AdayYemekler'in_Uzunluğu EŞİT 0 İSE
+        EKRANA_YAZDIR("Üzgünüm, bütçe kısıtlamasına uyan yemek bulunamadı.")
+        GERİ_DÖN "Tekrar Deneyin"
+    SON
+    
+    // Sonraki filtrelemeye geç
+    Sonuç = FiltrelemeAşaması(AdayYemekler, Kisitlamalar, MalzemeEnvanteri, Zaman, RuhHali)
+    
+    GERİ_DÖN Sonuç
+FONKSIYON FiltrelemeAşaması(AdayYemekler, Kisitlamalar, MalzemeEnvanteri, Zaman, RuhHali)
+    
+    NihaiAdaylar = BOŞ LİSTE
+    
+    // *** Tekrar Eden İşlem: Tüm adayları gözden geçir ve filtrele ***
+    
+    HER_BİR Yemek İÇİN AdayYemekler'DE
+        
+        UYGUN = DOĞRU // Varsayım: Başlangıçta her yemek uygundur
+        
+        // A. Koşul Kontrolü: Diyet Kısıtlamaları ve Alerjiler
+        
+        HER_BİR Kisitlama İÇİN Kisitlamalar'DA
+            EĞER Yemek, Kisitlama İLE ÇELİŞİYORSA
+                UYGUN = YANLIŞ
+                DÖNGÜYÜ_KIR // Diğer kısıtlamaları kontrol etmeye gerek yok
+            SON
+        SON_HER_BİR
+        
+        // Koşul: Eğer bu aşamada elendiysen, bir sonraki yemeğe geç
+        EĞER UYGUN EŞİT YANLIŞ İSE
+            DEVAM_ET // Sonraki yemeği kontrol et
+        SON
+        
+        // B. Koşul Kontrolü: Evde Pişirme Kısıtlamaları (Sadece Tarifler İçin)
+        
+        EĞER Yemek'in_Türü EŞİT "Tarif" İSE
+            // 1. Malzeme Yeterliliği Kontrolü
+            EĞER Yemek'in_Gerektirdiği_Malzemeler, MalzemeEnvanteri'NDE EKSİKSE
+                UYGUN = YANLIŞ
+            
+            // 2. Zaman Kısıtlaması Kontrolü
+            EĞER Yemek'in_Hazırlık_Süresi BÜYÜKTÜR Zaman İSE
+                UYGUN = YANLIŞ
+            SON
+        SON
+        
+        // Koşul: Eğer tüm kısıtlamaları geçtiyse, nihai listeye ekle
+        EĞER UYGUN EŞİT DOĞRU İSE
+            NihaiAdaylar'a EKLE Yemek
+        SON
+        
+    SON_HER_BİR // Tüm adaylar gözden geçirildi
+    
+    // *** Karar Verme ve Sonuç Koşulları ***
+    
+    // Koşul 1: Çok Fazla Seçenek Var
+    EĞER NihaiAdaylar'ın_Uzunluğu BÜYÜKTÜR 5 İSE
+        // Ruh Hali Filtresi: Son bir filtre uygula
+        EKRANA_YAZDIR("Çok fazla uygun seçenek var. Ruh haline göre filtreleniyor...")
+        
+        SonFiltre = NihaiAdaylar'dan RuhHali'NE EN YAKIN Olanları SEÇ
+        GERİ_DÖN SonFiltre'DEN_RASTGELE_BİRİNİ_SEÇ
+    
+    // Koşul 2: Sadece Bir Seçenek Var
+    EĞER NihaiAdaylar'ın_Uzunluğu EŞİT 1 İSE
+        EKRANA_YAZDIR("Tüm kısıtlamalara uyan tek yemek bulundu!")
+        GERİ_DÖN NihaiAdaylar[0] // Tek seçeneği döndür
+    
+    // Koşul 3: Hiç Seçenek Kalmadı
+    EĞER NihaiAdaylar'ın_Uzunluğu EŞİT 0 İSE
+        EKRANA_YAZDIR("Üzgünüm, verdiğiniz tüm kısıtlamalara uyan yemek bulunamadı.")
+        GERİ_DÖN "Filtreleri gevşetmeniz gerekiyor."
+        
+    // Koşul 4: Birkaç Seçenek Var (2-5)
+    DEĞİLSE
+        EKRANA_YAZDIR(NihaiAdaylar'ın_Uzunluğu + " uygun seçenek bulundu. Aralarından rastgele seçiliyor...")
+        GERİ_DÖN NihaiAdaylar'DAN_RASTGELE_BİRİNİ_SEÇ
+    SON
+
+SON_FONKSIYON
+    
+SON_FONKSIYON
