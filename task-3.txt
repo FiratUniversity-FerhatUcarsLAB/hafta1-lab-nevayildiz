@@ -1,4 +1,51 @@
-Öğrenci No:
-AD-SOYAD:
-
+Öğrenci No: 250541034
+AD-SOYAD: Neva Yıldız
+Görev Adı: Sınıf notlarını en yüksekten düşüğe sıralama
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+FONKSIYON NotlarıSırala(ÖğrenciListesi)
+    ListeUzunluğu = ÖğrenciListesi'nin_Uzunluğu
+    
+    // 1. Dış Tekrar Eden İşlem: Listenin kaç elemanını sıraladığımızı takip eder
+    // 'i', şu anda doğru elemanı yerleştirmemiz gereken pozisyonu temsil eder.
+    TEKRARLA (i 0'dan Başla, i ListeUzunluğu - 2'ye Kadar, i'yi 1 Arttır) // Listenin son elemanı otomatikman sıralanmış olacağı için son-2'ye kadar gideriz.
+
+        // i'den başlayarak listenin geri kalanındaki en yüksek notu bulacağız.
+        EnYüksekNot_Index = i
+        
+        // 2. İç Tekrar Eden İşlem: Listenin sıralanmamış kısmında en yüksek notu bulur
+        // 'j', sıralanmamış kısım üzerinde hareket eder.
+        TEKRARLA (j i + 1'den Başla, j ListeUzunluğu - 1'e Kadar, j'yi 1 Arttır)
+            
+            ŞimdikiNot = ÖğrenciListesi[j]'nin_Notu
+            EnYüksekNot = ÖğrenciListesi[EnYüksekNot_Index]'in_Notu
+
+            // Koşullu Durum: Bulduğumuz not, şu ana kadarki en yüksek nottan daha mı büyük?
+            EĞER ŞimdikiNot BÜYÜKTÜR EnYüksekNot İSE
+                // Yeni en yüksek notu bulduk. İndeksini kaydet.
+                EnYüksekNot_Index = j
+            SON
+            
+        SON_TEKRARLA // İç döngü bittiğinde, EnYüksekNot_Index listenin geri kalanındaki en yüksek notun yerini gösterir.
+        
+        // *** Koşullu Durum ve İşlem: Elemanları Değiştirme ***
+        
+        // Koşul: En yüksek not, zaten doğru pozisyonda (i) değilse, değiştirme yap.
+        EĞER EnYüksekNot_Index EŞİT DEĞİL i İSE
+            // 'i' pozisyonundaki (eski) elemanı ve bulunan en yüksek elemanı yer değiştir.
+            GeçiciDepo = ÖğrenciListesi[i]
+            ÖğrenciListesi[i] = ÖğrenciListesi[EnYüksekNot_Index]
+            ÖğrenciListesi[EnYüksekNot_Index] = GeçiciDepo
+        SON
+        
+    SON_TEKRARLA
+    
+    // *** Çıktı ***
+    
+    EKRANA_YAZDIR("Notlar En Yüksekten En Düşüğe Sıralandı:")
+    HER_BİR Öğrenci İÇİN ÖğrenciListesi'NDE
+        EKRANA_YAZDIR(Öğrenci'nin_Adı + ": " + Öğrenci'nin_Notu)
+    SON_HER_BİR
+
+    GERİ_DÖN ÖğrenciListesi // Sıralanmış listeyi döndür
+
+SON_FONKSIYON
