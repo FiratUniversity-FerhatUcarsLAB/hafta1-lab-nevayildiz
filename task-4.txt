@@ -1,4 +1,99 @@
-Öğrenci No:
-AD-SOYAD:
-
+Öğrenci No: 250541034
+AD-SOYAD: Neva Yıldız
+Görev Adı: N kişi için adil pasta paylaşımı
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+Girdi: N kişi ve pastanın tamamı (Başlangıçta 100%)
+FONKSIYON AdilPastaPaylas(N_Kişi_Sayısı)
+    
+    Kişiler = 1'den N_Kişi_Sayısı'na Kadar Olan Kişilerin_Listesi
+    KalanPasta = Pasta'nın_Tamamı // (Başlangıç: Pasta'nın %100'ü)
+    Paylar = BOŞ SÖZLÜK // {Kişi: Pay_Miktarı}
+    
+    // Tekrar Eden İşlem: Pasta tamamen paylaşılana kadar veya kişi sayısı 1 kalana kadar devam et
+    TEKRARLA (Kişiler'deki Eleman_Sayısı BÜYÜKTÜR 1 OLDUĞU SÜRECE)
+        
+        // 1. Paylaşım Turunu Uygula
+        Sonuç = PaylaşımTuruUygula(KalanPasta, Kişiler)
+        
+        AtananKişi = Sonuç'tan_Alınan_AtananKişi
+        AtananPay = Sonuç'tan_Alınan_AtananPay
+        YeniKalanPasta = Sonuç'tan_Alınan_KalanPasta
+        
+        // Atamayı Kaydet
+        Paylar[AtananKişi] = AtananPay
+        
+        // Atanan kişiyi ve paylaşılan pastayı listeden/kalandan çıkar
+        Kişiler'den ÇIKAR AtananKişi
+        KalanPasta = YeniKalanPasta
+        
+        EKRANA_YAZDIR(AtananKişi + " kişiye, pastanın " + AtananPay'ın_Değeri + " kadarı atandı.")
+        EKRANA_YAZDIR("Kalan pasta: " + KalanPasta'nın_Değeri + ". Kalan kişiler: " + Kişiler'in_Listesi)
+        
+    SON_TEKRARLA
+    
+    // Koşullu Durum: Son Kalan Kişiye Kalan Pasta Verilir
+    EĞER Kişiler'deki Eleman_Sayısı EŞİT 1 İSE
+        SonKişi = Kişiler'deki_Tek_Eleman
+        Paylar[SonKişi] = KalanPasta
+        EKRANA_YAZDIR("Son kişi (" + SonKişi + ") kalan pastanın tamamını aldı.")
+    SON
+    
+    GERİ_DÖN Paylar // Nihai payları döndür
+FONKSIYON PaylaşımTuruUygula(MevcutPasta, Kişiler)
+    N_Aktif_Kişi = Kişiler'deki Eleman_Sayısı
+    
+    // Herkesin, pastanın 1/N'lik adil bir payına sahip olduğuna inandığı noktayı bulması gerekir.
+    // Bu, sürekli kesim (moving knife) veya işaretleme (marking) ile yapılır.
+
+    // 1. Tekrar Eden İşlem (İşaretleme): Herkes kendi adil payını işaretler
+    KesimNoktaları = BOŞ SÖZLÜK // {Kişi: Kesim_Noktası}
+    
+    HER_BİR Kişi İÇİN Kişiler'DE
+        
+        // Varsayım: Kişi, MevcutPasta'yı kendi değerlemesine göre
+        // tam olarak 1/N oranında bölen bir nokta (KesimNoktası) bulur.
+        // Bu, pastanın sadece bir kısmının kesilmesini varsayar.
+        
+        // Kıskançlıktan arınmışlık koşulu: Kişi, kesim noktasının solunda kalan
+        // parçayı (P) pastanın en az 1/N'i kadar değerli görüyor.
+        
+        KesimNoktası = Kişinin_1_Bölü_N_Değerinde_Gördüğü_Kesim_Noktasını_Bul(MevcutPasta, N_Aktif_Kişi)
+        
+        KesimNoktaları[Kişi] = KesimNoktası
+        
+    SON_HER_BİR
+    
+    // 2. Koşul Kontrolü (Atama): En küçük payı kesen kişiyi bul
+    
+    // Pastanın başından itibaren en yakın kesim noktasını (en küçük pastayı) bul
+    EnErkenKesimNoktası = KesimNoktaları'nın_EN_KÜÇÜK_DEĞERİ
+    
+    // Bu en küçük kesimi yapan kişiyi (veya kişileri) bul
+    KesimYapanKişiler = KesimNoktaları'nda EnErkenKesimNoktasına EŞİT Olan Kişiler
+    
+    // Varsayım: Berabere kalma durumunda rastgele birini seç
+    AtananKişi = KesimYapanKişiler'den_RASTGELE_SEÇİLEN_KİŞİ
+    
+    // 3. İşlem (Kesme ve Ayırma)
+    
+    // Atanan pay, pastanın başlangıcından EnErkenKesimNoktasına kadar olan kısımdır.
+    AtananPay = MevcutPasta'nın_Başlangıcından_EnErkenKesimNoktasına_Kadar_Olan_Parçası
+    
+    // Kalan pasta, KesimNoktasından sonraki kısımdır.
+    YeniKalanPasta = MevcutPasta'nın_EnErkenKesimNoktasından_Sonuna_Kadar_Olan_Parçası
+    
+    // *** Neden Bu Adil? ***
+    // AtananKişi, bu payı tam olarak 1/N değerinde gördüğü için mutludur.
+    // Diğer tüm kişiler (Kişi_X), bu payı (P) kendi 1/N'lik adil paylarından
+    // DAHA AZ değerli görmüş olmalıdır (çünkü kendi kesimleri P'den daha uzaktadır).
+    // Bu nedenle, kimse AtananKişi'yi kıskanmaz.
+    
+    GERİ_DÖN {
+        AtananKişi: AtananKişi,
+        AtananPay: AtananPay,
+        KalanPasta: YeniKalanPasta
+    }
+
+SON_FONKSIYON
+
+SON_FONKSIYON
